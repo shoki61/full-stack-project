@@ -49,7 +49,11 @@ const NewPlace = () => {
     dispatch({type: 'INPUT_CHANGE', value, isValid, inputId: id});
   }, []);
 
-  return <form className='place-form'>
+  const placeSubmitHandler = event => {
+    event.preventDefault();
+  };
+
+  return <form onSubmit={placeSubmitHandler} className='place-form'>
     <Input 
       id='title'
       element='input' 
@@ -65,6 +69,14 @@ const NewPlace = () => {
       label='Description'
       validators={[VALIDATOR_MINLENGTH(5)]}
       errorText='Please enter a valid description (at leats 5 characters).'
+      onInput={inputHandler}
+    />
+    <Input 
+      id='address'
+      element='input'
+      label='Address'
+      validators={[VALIDATOR_REQUIRE()]}
+      errorText='Please enter a valid address.'
       onInput={inputHandler}
     />
     <Button type='submit' disabled={!formState.isValid}>ADD PLACE</Button>
