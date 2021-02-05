@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../shared/util/validators';
-import { UserForm } from '../../shared/hooks/form-hook';
+import { UseForm } from '../../shared/hooks/form-hook';
 import Card from '../../shared/components/UIElements/Card';
 import './PlaceForm.css';
 
@@ -45,7 +45,7 @@ const UpdatePlace = props => {
 
     const placeId = useParams().placeId;
     
-    const [formState, inputHandler, setFormData] = UserForm({
+    const [formState, inputHandler, setFormData] = UseForm({
         title: {
             value: '',
             isValid: false

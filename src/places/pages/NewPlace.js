@@ -3,12 +3,12 @@ import React from 'react';
 import Input from '../../shared/components/FormElements/Input';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../shared/util/validators';
 import Button from '../../shared/components/FormElements/Button';
-import { UserForm } from '../../shared/hooks/form-hook';
+import { UseForm } from '../../shared/hooks/form-hook';
 import './PlaceForm.css';
 
 const NewPlace = () => {
 
-  const [formState, inputHandler] = UserForm({
+  const [formState, inputHandler] = UseForm({
     title: {
       value: '',
       isValid: false
