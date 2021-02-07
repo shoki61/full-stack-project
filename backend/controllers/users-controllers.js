@@ -35,7 +35,7 @@ const singup = async (req, res, next) => {
     if(!errors.isEmpty()){
         return next(new HttpError(`Invalid ${errors.errors[0].param}, please check your data!`, 422));
     };
-    const { name, email, password, places} = req.body;
+    const { name, email, password } = req.body;
     let existingUser;
     try {
         existingUser = await User.findOne({ email });
@@ -52,7 +52,7 @@ const singup = async (req, res, next) => {
         email,
         password,
         image: 'https://images.pexels.com/photos/839011/pexels-photo-839011.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-        places
+        places: []
     });
     try{
         await createdUser.save();
