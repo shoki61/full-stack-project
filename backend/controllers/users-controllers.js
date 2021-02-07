@@ -29,20 +29,17 @@ const singup = async (req, res, next) => {
         return next(new HttpError(`Invalid ${errors.errors[0].param}, please check your data!`, 422));
     };
     const { name, email, password, places} = req.body;
-
     let existingUser;
     try {
-        const existingUser = await User.findOne({ email });
+        existingUser = await User.findOne({ email });
     } catch(e) {
         const error = new HttpError('Signing up failed, please try again later.', 500);
         return next(error);
     };
-
     if(existingUser){
         const error = new HttpError('User exists already, please login instead.', 422);
         return next(error);
     };
-
     const createdUser = new User({
         name,
         email,
@@ -50,7 +47,6 @@ const singup = async (req, res, next) => {
         image: 'https://images.pexels.com/photos/839011/pexels-photo-839011.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
         places
     });
-
     try{
         await createdUser.save();
     } catch(e){
@@ -60,13 +56,20 @@ const singup = async (req, res, next) => {
     res.status(201).json({user: createdUser.toObject({ getters: true })});
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     const { email, password} = req.body;
 
-    const identifiedUser = DUMMY_USERS.find(u => u.email === email);
-    
-    if(!identifiedUser || identifiedUser.password !== password) {
-        throw new HttpError('User not found', 401);
+    let existingUser;
+    try {
+        existingUser = await User.findOne({ email });
+    } catch(e) {
+        const error = new HttpError('Loging in failed, please try again later.', 500);
+        return next(error);
+    };
+
+    if(!existingUser || existingUser.password !== password){
+        const error = new HttpError('Invalid credentials, could not log you in', 401);
+        return next(error);
     };
 
     res.json({message: 'Logged in'});
