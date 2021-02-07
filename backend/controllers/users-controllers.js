@@ -2,6 +2,7 @@ const {v4: uuid} = require('uuid');
 const { validationResult } = require('express-validator');
 
 const HttpError = require('../models/http-error');
+const User = require('../models/user');
 
 const DUMMY_USERS = [
     {
@@ -22,28 +23,41 @@ const getUsers = (req, res, next) => {
     res.json({users: DUMMY_USERS});
 };
 
-const singup = (req, res, next) => {
+const singup = async (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        throw new HttpError(`Invalid ${errors.errors[0].param}, please check your data!`, 422);
+        return next(new HttpError(`Invalid ${errors.errors[0].param}, please check your data!`, 422));
     };
-    const { name, email, password} = req.body;
+    const { name, email, password, places} = req.body;
 
-    const hasUser = DUMMY_USERS.find(u => u.email === email);
-
-    if(hasUser) {
-        throw new HttpError('Coult not create user, email adready exists', 422);
+    let existingUser;
+    try {
+        const existingUser = await User.findOne({ email });
+    } catch(e) {
+        const error = new HttpError('Signing up failed, please try again later.', 500);
+        return next(error);
     };
 
-    const createdUser = {
-        id: uuid(),
+    if(existingUser){
+        const error = new HttpError('User exists already, please login instead.', 422);
+        return next(error);
+    };
+
+    const createdUser = new User({
         name,
         email,
-        password
-    };
+        password,
+        image: 'https://images.pexels.com/photos/839011/pexels-photo-839011.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        places
+    });
 
-    DUMMY_USERS.push(createdUser);
-    res.status(201).json({user: createdUser});
+    try{
+        await createdUser.save();
+    } catch(e){
+        const error = new HttpError('Signing up failed, please try again later.', 500);
+        return next(error);
+    };
+    res.status(201).json({user: createdUser.toObject({ getters: true })});
 };
 
 const login = (req, res, next) => {
