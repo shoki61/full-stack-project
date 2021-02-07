@@ -3,14 +3,14 @@ const { v4: uuid } = require('uuid');
 const { validationResult } = require('express-validator');
 
 const getCoordsForAddress = require('../util/location');
+const Place = require('../models/place');
 
 let DUMMY_PLACES = [
     {
       id: 'p1',
       title: 'Empire State Building',
       description: 'One of the most famous sky scrapers in the world!',
-      imageUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
       address: '20 W 34th St, New York, NY 10001',
       location: {
         lat: 40.7484405,
@@ -72,17 +72,22 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
-  const createdPlace = {
-      id: uuid(),
-      title,
-      description,
-      address,
-      location: coordinates,
-      creator
-  };
+  const createdPlace = new Place({
+    title,
+    description,
+    address,
+    location: coordinates,
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg',
+    creator
+  });
 
-  DUMMY_PLACES.push(createdPlace);
-  res.status(201).json({place: createdPlace});
+  try{
+    await createdPlace.save();
+    res.status(201).json({place: createdPlace});
+  } catch(e) {
+    const error = new HttpError('Creating place failed, please try againg.', 500);
+    return next(error);
+  };
 };
 
 const getAllPlaces = (req, res, next) => {
