@@ -32,9 +32,9 @@ app.use((error,req, res, next)  => {
     res.status(error.code || 500).json({error: error.message || 'Not Found'});
 });
 
-mongoose.connect('mongodb+srv://manu:murtishoki61@cluster0.jrili.mongodb.net/places?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://manu:murtishoki61@cluster0.jrili.mongodb.net/mern?retryWrites=true&w=majority')
 .then(()=>{
-    app.listen(3000);
+    app.listen(5000);
 }).catch(error => {
     console.log(error);
 });
