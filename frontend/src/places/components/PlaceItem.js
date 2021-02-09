@@ -83,8 +83,8 @@ const PlaceItem = props => {
           </div>
           <div className="place-item__actions">
             <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
-            { auth.isLoggedIn && <Button to={`/places/${props.id}`}>EDIT</Button> }
-            { auth.isLoggedIn && <Button danger onClick={showDeleteWorningHandler}>DELETE</Button> }
+            { auth.userId === props.creatorId && <Button to={`/places/${props.id}`}>EDIT</Button> }
+            { auth.userId === props.creatorId && <Button danger onClick={showDeleteWorningHandler}>DELETE</Button> }
           </div>
         </Card>
       </li>
