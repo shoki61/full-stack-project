@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -27,6 +29,11 @@ app.use((req, res, next) => {
 });
 
 app.use((error,req, res, next)  => {
+    if(req.file){
+        fs.unlink(req.file.path, error => {
+            console.log(error);
+        });
+    };
     if(res.headerSent) return next(error);
 
     res.status(error.code || 500).json({error: error.message || 'Not Found'});
