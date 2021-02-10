@@ -42,7 +42,7 @@ app.use((error,req, res, next)  => {
     res.status(error.code || 500).json({error: error.message || 'Not Found'});
 });
 
-mongoose.connect('mongodb+srv://manu:murtishoki61@cluster0.jrili.mongodb.net/mern?retryWrites=true&w=majority')
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.jrili.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
 .then(()=>{
     app.listen(5000);
 }).catch(error => {
