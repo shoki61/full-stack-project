@@ -44,7 +44,7 @@ const NewPlace = () => {
       formData.append('address', formState.inputs.address.value);
       formData.append('image', formState.inputs.image.value);
       event.preventDefault();
-      await sendRequest(process.env.REACT_APP_BACKEND_URL + '/places', 'POST', formData, { Authorization: 'Bearer ' + token });
+      await sendRequest(process.env.REACT_APP_BACKEND_URL + '/places', 'POST', formData, { Authorization: 'Bearer ' + auth.token });
       history.push('/');
     } catch(e) {}
   };
