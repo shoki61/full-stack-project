@@ -1,11 +1,12 @@
-const HttpError = require('../models/http-error');
-const { v4: uuid } = require('uuid');
+const fs = require('fs');
+
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
 const getCoordsForAddress = require('../util/location');
 const Place = require('../models/place');
 const User = require('../models/user');
+const HttpError = require('../models/http-error');
 
 const getPlaceById = async (req, res, next) => {
     const placeId = req.params.pid;
@@ -147,6 +148,8 @@ const deletePlace = async (req, res, next) => {
       return next(error);
     };
 
+    const imagePath = place.image;
+
     try {
       const sess = mongoose.startSession();
       sess.startTransaction();
@@ -158,6 +161,9 @@ const deletePlace = async (req, res, next) => {
       const error = new HttpError('Something when wrong could not delete place!', 500);
       return next(error);
     };
+
+    fs.unlink(imagePath, error => consoleçlog(error));
+
     res.status(200).json({message: 'Deleted place.'});
 };
 
