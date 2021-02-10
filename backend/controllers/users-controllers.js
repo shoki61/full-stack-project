@@ -68,7 +68,20 @@ const login = async (req, res, next) => {
         return next(error);
     };
 
-    if(!existingUser || existingUser.password !== password){
+    if(!existingUser){
+        const error = new HttpError('Invalid credentials, could not log you in', 401);
+        return next(error);
+    };
+
+    let isValisPassword = false;
+    try {
+        isValisPassword = bcrypt.compare(password, existingUser.password);
+    } catch(error) {
+        const error  = new HttpError('Coult not log you in, please check your credentials and try egain.', 500);
+        return next(error);
+    };
+
+    if(!isValisPassword){
         const error = new HttpError('Invalid credentials, could not log you in', 401);
         return next(error);
     };
